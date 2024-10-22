@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:amazontrees/utils/colors.dart';
+import 'tela_inicial.dart';
 
 class TelaLogin extends StatelessWidget {
   final _usernameController = TextEditingController();
@@ -17,14 +18,14 @@ class TelaLogin extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Espaçamento para descer a imagem
-              SizedBox(height: 50), // Ajuste este valor conforme necessário
+              SizedBox(height: 50),
 
               // Imagem fixa
               Container(
                 width: 380,
                 height: 400,
                 child: Image.asset(
-                  'assets/tree_logo.png',
+                  'assets/images/tree_logo.png',
                   fit: BoxFit.cover,
                 ),
               ),
@@ -46,7 +47,8 @@ class TelaLogin extends StatelessWidget {
                                 borderSide: BorderSide(color: Colors.white),
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              prefixIcon: Icon(Icons.person, color: Colors.white),
+                              prefixIcon:
+                                  Icon(Icons.person, color: Colors.white),
                               labelStyle: TextStyle(color: Colors.white),
                             ),
                             style: TextStyle(color: Colors.white),
@@ -60,7 +62,8 @@ class TelaLogin extends StatelessWidget {
                             decoration: InputDecoration(
                               labelText: 'Senha',
                               border: OutlineInputBorder(
-                                borderSide: const BorderSide(color: AppColors.secondaryColor),
+                                borderSide: const BorderSide(
+                                    color: AppColors.secondaryColor),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               prefixIcon: Icon(Icons.lock, color: Colors.white),
@@ -71,18 +74,29 @@ class TelaLogin extends StatelessWidget {
                           SizedBox(height: 12),
 
                           // Botão de Login
-                          ElevatedButton(
-                            onPressed: () {},
-                            child: Text('Login'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.secondaryColor,
-                              foregroundColor: Colors.white,
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 15, horizontal: 35),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                          SizedBox(
+                            width: 200, // Definindo a largura
+                            height: 50, // Definindo a altura
+                            child: ElevatedButton(
+                              onPressed: () {
+                                // Navegar para a TelaInicial
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => TelaInicial()),
+                                );
+                              },
+                              child: Text('Login'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.secondaryColor,
+                                foregroundColor: Colors.white,
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 15, horizontal: 35),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                elevation: 5,
                               ),
-                              elevation: 5,
                             ),
                           ),
                         ],

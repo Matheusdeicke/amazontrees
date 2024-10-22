@@ -1,3 +1,4 @@
+import 'package:amazontrees/view/tela_inicial.dart';
 import 'package:flutter/material.dart';
 import 'view/tela_login.dart';
 import 'utils/colors.dart';
