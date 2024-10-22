@@ -1,12 +1,14 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:amazontrees/utils/colors.dart';
+
+import '../utils/colors.dart';
 
 class TelaHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home'),
+        title: Text('AMAZONTREE'),
         backgroundColor: AppColors.secondaryColor,
       ),
       body: Padding(
@@ -30,21 +32,26 @@ class TelaHome extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildActionButton(
-                  context,
-                  icon: Icons.add,
-                  label: 'Cadastrar Árvores',
-                  onPressed: () {
-                    // Navegar para a tela de cadastro de árvores
-                  },
+                Expanded(
+                  child: _buildActionButton(
+                    context,
+                    icon: Icons.add,
+                    label: 'Cadastrar Árvores',
+                    onPressed: () {
+                      // Navegar para a tela de cadastro de árvores
+                    },
+                  ),
                 ),
-                _buildActionButton(
-                  context,
-                  icon: Icons.cloud_done,
-                  label: 'Árvores Cadastradas',
-                  onPressed: () {
-                    // Navegar para a tela de árvores cadastradas
-                  },
+                SizedBox(width: 10), // Espaço entre os botões
+                Expanded(
+                  child: _buildActionButton(
+                    context,
+                    icon: Icons.cloud_done,
+                    label: 'Árvores Cadastradas',
+                    onPressed: () {
+                      // Navegar para a tela de árvores cadastradas
+                    },
+                  ),
                 ),
               ],
             ),
@@ -56,14 +63,24 @@ class TelaHome extends StatelessWidget {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
-            Expanded(
-              child: ListView(
+
+            SizedBox(
+              height: 140, // Define a altura da ListView
+              child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                children: [
-                  FavoritoCard('Pau Brasil', 'assets/images/pau_brasil.png'),
-                  FavoritoCard('Cajueiro', 'assets/images/cajueiro.png'),
-                  FavoritoCard('Andiroba', 'assets/images/andiroba.png'),
-                ],
+                itemCount: favoritos.length, // Quantidade de itens na lista
+                itemBuilder: (context, index) {
+                  return Container(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width / 3, // Dividido por 3 para mostrar 3 por vez
+                    child: FavoritoCard(
+                      favoritos[index]['nome']!,
+                      favoritos[index]['imagePath']!,
+                    ),
+                  );
+                },
               ),
             ),
           ],
@@ -71,21 +88,23 @@ class TelaHome extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildActionButton(BuildContext context, {required IconData icon, required String label, required VoidCallback onPressed}) {
-    return ElevatedButton.icon(
-      onPressed: onPressed,
-      icon: Icon(icon),
-      label: Text(label),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primaryColor,
-        foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+
+Widget _buildActionButton(BuildContext context,
+    {required IconData icon, required String label, required VoidCallback onPressed}) {
+  return ElevatedButton.icon(
+    onPressed: onPressed,
+    icon: Icon(icon),
+    label: Text(label),
+    style: ElevatedButton.styleFrom(
+      backgroundColor: AppColors.primaryColor,
+      foregroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
       ),
-    );
-  }
+    ),
+  );
 }
 
 class FavoritoCard extends StatelessWidget {
@@ -118,3 +137,13 @@ class FavoritoCard extends StatelessWidget {
     );
   }
 }
+
+// Lista de árvores favoritas (exemplo)
+final List<Map<String, String>> favoritos = [
+  {'nome': 'Pau Brasil', 'imagePath': 'assets/images/pau_brasil.png'},
+  {'nome': 'Cajueiro', 'imagePath': 'assets/images/cajueiro.png'},
+  {'nome': 'Andiroba', 'imagePath': 'assets/images/andiroba.png'},
+  {'nome': 'Jequitibá', 'imagePath': 'assets/images/jequitiba.png'},
+  {'nome': 'Ipê Amarelo', 'imagePath': 'assets/images/ipe_amarelo.png'},
+  {'nome': 'Mogno', 'imagePath': 'assets/images/mogno.png'},
+];
