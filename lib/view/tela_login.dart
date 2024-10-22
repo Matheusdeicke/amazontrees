@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:amazontrees/utils/colors.dart';
+import 'tela_inicial.dart';
 
 class TelaLogin extends StatelessWidget {
   final _usernameController = TextEditingController();
@@ -17,14 +18,14 @@ class TelaLogin extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Espaçamento para descer a imagem
-              SizedBox(height: 50), // Ajuste este valor conforme necessário
+              SizedBox(height: 50),
 
               // Imagem fixa
               Container(
                 width: 380,
                 height: 400,
                 child: Image.asset(
-                  'assets/tree_logo.png',
+                  'assets/images/tree_logo.png',
                   fit: BoxFit.cover,
                 ),
               ),
@@ -72,13 +73,18 @@ class TelaLogin extends StatelessWidget {
 
                           // Botão de Login
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              // Navegar para a TelaInicial
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => TelaInicial()),
+                              );
+                            },
                             child: Text('Login'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.secondaryColor,
                               foregroundColor: Colors.white,
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 15, horizontal: 35),
+                              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 35),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
