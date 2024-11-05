@@ -82,10 +82,10 @@ class _TelaInicialState extends State<TelaInicial> {
       ),
       body: _telas[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
+        type: BottomNavigationBarType.shifting,
         showUnselectedLabels: false,
-        selectedItemColor: AppColors.backgroundColor, // Cor do item selecionado
-        unselectedItemColor: Colors.white, // Cor dos itens não selecionados
+        selectedItemColor: AppColors.selectedNavigationBar, // Cor do item selecionado
+        unselectedItemColor: AppColors.backgroundColor, // Cor dos itens não selecionados
         backgroundColor: AppColors.secondaryColor, // Cor de fundo da BottomNavigationBar
         currentIndex: _selectedIndex,
         items: const <BottomNavigationBarItem>[

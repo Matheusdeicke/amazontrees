@@ -7,6 +7,7 @@ class TelaHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
       appBar: AppBar(
         title: Text('AMAZONTREE'),
         backgroundColor: AppColors.secondaryColor,
@@ -32,17 +33,6 @@ class TelaHome extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  child: _buildActionButton(
-                    context,
-                    icon: Icons.add,
-                    label: 'Cadastrar Árvores',
-                    onPressed: () {
-                      // Navegar para a tela de cadastro de árvores
-                    },
-                  ),
-                ),
-                SizedBox(width: 10), // Espaço entre os botões
                 Expanded(
                   child: _buildActionButton(
                     context,

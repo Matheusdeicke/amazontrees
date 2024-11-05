@@ -1,3 +1,4 @@
+import 'package:amazontrees/view/tela_info_arvores.dart';
 import 'package:flutter/material.dart';
 import 'package:amazontrees/utils/colors.dart';
 
@@ -8,22 +9,14 @@ class TelaListaEspecies extends StatelessWidget {
       appBar: AppBar(
         title: Text('Lista de Espécies'),
         backgroundColor: AppColors.secondaryColor,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              // Adicionar lógica para adicionar nova espécie
-            },
-          ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            _buildEspecieTile('Pau Brasil', 'Uma árvore nativa do Brasil.', 'assets/images/pau_brasil.png'),
-            _buildEspecieTile('Cajueiro', 'Árvore que produz caju.', 'assets/images/cajueiro.png'),
-            _buildEspecieTile('Andiroba', 'Árvore conhecida por seu óleo.', 'assets/images/andiroba.png'),
+            _buildEspecieTile(context, 'Pau Brasil', 'Uma árvore nativa do Brasil.', 'assets/images/pau_brasil.png'),
+            _buildEspecieTile(context, 'Cajueiro', 'Árvore que produz caju.', 'assets/images/cajueiro.png'),
+            _buildEspecieTile(context, 'Andiroba', 'Árvore conhecida por seu óleo.', 'assets/images/andiroba.png'),
             // Adicione mais espécies conforme necessário
           ],
         ),
@@ -31,21 +24,31 @@ class TelaListaEspecies extends StatelessWidget {
     );
   }
 
-  Widget _buildEspecieTile(String nome, String descricao, String imagePath) {
+  Widget _buildEspecieTile(BuildContext context, String nome, String descricao, String imagePath) {
     return Card(
       margin: EdgeInsets.only(bottom: 10),
       child: ListTile(
         leading: Image.asset(
           imagePath,
-          width: 50,  // Ajuste a largura conforme necessário
-          height: 50, // Ajuste a altura conforme necessário
+          width: 50,
+          height: 50,
           fit: BoxFit.cover,
         ),
         title: Text(nome),
         subtitle: Text(descricao),
         trailing: Icon(Icons.arrow_forward),
         onTap: () {
-          // Lógica para visualizar detalhes da espécie
+          // Navegar para a tela de detalhes da árvore
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TelaInfoArvores(
+                nome: nome,
+                descricao: descricao,
+                imagePath: imagePath,
+              ),
+            ),
+          );
         },
       ),
     );
