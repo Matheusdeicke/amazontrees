@@ -17,47 +17,54 @@ class TelaInfoArvores extends StatelessWidget {
         centerTitle: true,
         backgroundColor: AppColors.secondaryColor,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            // Imagem da árvore
-            Container(
-              decoration: BoxDecoration(
-                color: AppColors.secondaryColor,
-                borderRadius: BorderRadius.circular(12.0), // Ajuste o valor para o arredondamento desejado
-              ),
-              margin: EdgeInsets.only(bottom: 16),
-              padding: EdgeInsets.all(20.0),
-              child: Image.asset(
-                imagePath,
-                fit: BoxFit.cover,
-              ),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: 600, // Limita a largura máxima para telas maiores
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ListView(
+              children: [
+                // Imagem da árvore
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  margin: EdgeInsets.only(bottom: 16),
+                  padding: EdgeInsets.all(20.0),
+                  child: Image.asset(
+                    imagePath,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                // Nome da árvore
+                Text(
+                  nome,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 16),
+                // Descrição
+                Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    descricao,
+                    style: TextStyle(fontSize: 14),
+                    textAlign: TextAlign.justify,
+                  ),
+                ),
+              ],
             ),
-            // Nome da árvore
-            Text(
-              nome,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 16),
-            // Descrição
-            Container(
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                descricao,
-                style: TextStyle(fontSize: 14),
-                textAlign: TextAlign.justify,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

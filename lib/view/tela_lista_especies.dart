@@ -6,10 +6,12 @@ class TelaListaEspecies extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
       appBar: AppBar(
         title: Text('Lista de Espécies'),
         backgroundColor: AppColors.secondaryColor,
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
