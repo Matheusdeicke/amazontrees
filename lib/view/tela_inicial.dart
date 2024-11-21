@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:amazontrees/utils/colors.dart';
-import 'tela_home.dart'; // Importe a TelaHome
-import 'tela_lista_especies.dart'; // Importe a TelaListaEspecies
-import 'tela_favoritos.dart'; // Importe a TelaFavoritos
-import 'tela_sincronizar.dart'; // Importe a TelaSincronizar
+import 'tela_home.dart';
+import 'tela_lista_especies.dart';
+import 'tela_sincronizar.dart';
 
 class TelaInicial extends StatefulWidget {
   @override
@@ -17,7 +16,7 @@ class _TelaInicialState extends State<TelaInicial> {
   final List<Widget> _telas = [
     TelaHome(),
     TelaListaEspecies(),
-    // Adicione aqui as outras telas conforme necessário
+    //TelaSincronizar()
   ];
 
   void _onItemTapped(int index) {
@@ -96,10 +95,6 @@ class _TelaInicialState extends State<TelaInicial> {
           BottomNavigationBarItem(
             icon: Icon(Icons.list),
             label: 'Lista de Espécies',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favoritos',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.sync),
