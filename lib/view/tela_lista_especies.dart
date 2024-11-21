@@ -1,8 +1,25 @@
 import 'package:amazontrees/view/tela_info_arvores.dart';
 import 'package:flutter/material.dart';
 import 'package:amazontrees/utils/colors.dart';
+import 'package:amazontrees/services/api_service.dart';
 
-class TelaListaEspecies extends StatelessWidget {
+
+import '../model/Especies.dart';
+
+class TelaListaEspecies extends StatefulWidget {
+  @override
+  _TelaListaEspeciesState createState() => _TelaListaEspeciesState();
+}
+
+class _TelaListaEspeciesState extends State<TelaListaEspecies> {
+  late Future<List<Arvore>> especiesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    especiesFuture = ApiService.fetchEspecies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -11,33 +28,50 @@ class TelaListaEspecies extends StatelessWidget {
         title: Text('Lista de Espécies'),
         backgroundColor: AppColors.secondaryColor,
       ),
+      body: FutureBuilder<List<Arvore>>(
+        future: especiesFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
 
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            _buildEspecieTile(context, 'Pau Brasil', 'Uma árvore nativa do Brasil.', 'assets/images/pau_brasil.png'),
-            _buildEspecieTile(context, 'Cajueiro', 'Árvore que produz caju.', 'assets/images/cajueiro.png'),
-            _buildEspecieTile(context, 'Andiroba', 'Árvore conhecida por seu óleo.', 'assets/images/andiroba.png'),
-            // Adicione mais espécies conforme necessário
-          ],
-        ),
+          if (snapshot.hasError) {
+            return Center(child: Text('Erro ao carregar dados'));
+          }
+
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('Nenhuma espécie encontrada'));
+          }
+
+          final especies = snapshot.data!;
+
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ListView.builder(
+              itemCount: especies.length,
+              itemBuilder: (context, index) {
+                final especie = especies[index];
+                return _buildEspecieTile(context, especie);
+              },
+            ),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildEspecieTile(BuildContext context, String nome, String descricao, String imagePath) {
+  Widget _buildEspecieTile(BuildContext context, Arvore arvore) {
     return Card(
       margin: EdgeInsets.only(bottom: 10),
       child: ListTile(
         leading: Image.asset(
-          imagePath,
+          arvore.imagePath,
           width: 50,
           height: 50,
           fit: BoxFit.cover,
         ),
-        title: Text(nome),
-        subtitle: Text(descricao),
+        title: Text(arvore.nomePopular),
+        subtitle: Text(arvore.descricaoBotanica),
         trailing: Icon(Icons.arrow_forward),
         onTap: () {
           // Navegar para a tela de detalhes da árvore
@@ -45,9 +79,9 @@ class TelaListaEspecies extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => TelaInfoArvores(
-                nome: nome,
-                descricao: descricao,
-                imagePath: imagePath,
+                nome: arvore.nomePopular,
+                descricao: arvore.descricaoBotanica,
+                imagePath: arvore.imagePath,
               ),
             ),
           );
