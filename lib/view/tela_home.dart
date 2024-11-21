@@ -42,7 +42,7 @@ class TelaHome extends StatelessWidget {
                   child: _buildActionButton(
                     context,
                     icon: Icons.cloud_done,
-                    label: 'Árvores Cadastradas',
+                    label: 'Lista de Espécies',
                     onPressed: () {
                       // Abre a tela da lista de espécies
                       Navigator.push(
