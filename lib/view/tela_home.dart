@@ -1,9 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'tela_lista_especies.dart';  // Importando a tela correta
 import '../utils/colors.dart';
 
 class TelaHome extends StatelessWidget {
+  // Função de sincronizar
+  void sincronizarDados() {
+    // Aqui você pode implementar a lógica de sincronização com o servidor
+    print("Sincronizando dados...");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,60 +34,36 @@ class TelaHome extends StatelessWidget {
             ),
             SizedBox(height: 20),
 
-            // Botões de cadastrar árvores e árvores cadastradas
+            // Botões
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: _buildActionButton(
                     context,
-                    icon: Icons.add,
-                    label: 'Cadastrar Árvores',
-                    onPressed: () {
-                      // Navegar para a tela de cadastro de árvores
-                    },
-                  ),
-                ),
-                SizedBox(width: 10), // Espaço entre os botões
-                Expanded(
-                  child: _buildActionButton(
-                    context,
                     icon: Icons.cloud_done,
                     label: 'Árvores Cadastradas',
                     onPressed: () {
-                      // Navegar para a tela de árvores cadastradas
+                      // Abre a tela da lista de espécies
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => TelaListaEspecies()),
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: _buildActionButton(
+                    context,
+                    icon: Icons.sync,
+                    label: 'Sincronizar',
+                    onPressed: () {
+                      sincronizarDados();  // Chama a função de sincronização
                     },
                   ),
                 ),
               ],
-            ),
-            SizedBox(height: 20),
-
-            // Seção de favoritos
-            Text(
-              'Favoritos',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-
-            SizedBox(
-              height: 140, // Define a altura da ListView
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: favoritos.length, // Quantidade de itens na lista
-                itemBuilder: (context, index) {
-                  return Container(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width / 3, // Dividido por 3 para mostrar 3 por vez
-                    child: FavoritoCard(
-                      favoritos[index]['nome']!,
-                      favoritos[index]['imagePath']!,
-                    ),
-                  );
-                },
-              ),
             ),
           ],
         ),
@@ -89,7 +71,6 @@ class TelaHome extends StatelessWidget {
     );
   }
 }
-
 
 Widget _buildActionButton(BuildContext context,
     {required IconData icon, required String label, required VoidCallback onPressed}) {
@@ -106,44 +87,3 @@ Widget _buildActionButton(BuildContext context,
     ),
   );
 }
-
-class FavoritoCard extends StatelessWidget {
-  final String nome;
-  final String imagePath;
-
-  FavoritoCard(this.nome, this.imagePath);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.only(right: 10),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        children: [
-          Image.asset(
-            imagePath,
-            width: 100,
-            height: 100,
-            fit: BoxFit.cover,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(nome),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// Lista de árvores favoritas (exemplo)
-final List<Map<String, String>> favoritos = [
-  {'nome': 'Pau Brasil', 'imagePath': 'assets/images/pau_brasil.png'},
-  {'nome': 'Cajueiro', 'imagePath': 'assets/images/cajueiro.png'},
-  {'nome': 'Andiroba', 'imagePath': 'assets/images/andiroba.png'},
-  {'nome': 'Jequitibá', 'imagePath': 'assets/images/jequitiba.png'},
-  {'nome': 'Ipê Amarelo', 'imagePath': 'assets/images/ipe_amarelo.png'},
-  {'nome': 'Mogno', 'imagePath': 'assets/images/mogno.png'},
-];

@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryColor),
         useMaterial3: true,
       ),
-      home: TelaLogin(), // Exibindo TelaLogin como a tela inicial
+      home: TelaCarregamento(), // Exibindo TelaLogin como a tela inicial
     );
   }
 }

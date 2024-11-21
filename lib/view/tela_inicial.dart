@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:amazontrees/utils/colors.dart';
 import 'tela_home.dart'; // Importe a TelaHome
 import 'tela_lista_especies.dart'; // Importe a TelaListaEspecies
-import 'tela_favoritos.dart'; // Importe a TelaFavoritos
-import 'tela_sincronizar.dart'; // Importe a TelaSincronizar
 
 class TelaInicial extends StatefulWidget {
   @override
