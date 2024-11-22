@@ -65,7 +65,7 @@ class _TelaListaEspeciesState extends State<TelaListaEspecies> {
       margin: EdgeInsets.only(bottom: 10),
       child: ListTile(
         leading: Image.asset(
-          arvore.imagePath,
+          '',
           width: 50,
           height: 50,
           fit: BoxFit.cover,
@@ -81,7 +81,7 @@ class _TelaListaEspeciesState extends State<TelaListaEspecies> {
               builder: (context) => TelaInfoArvores(
                 nome: arvore.nomePopular,
                 descricao: arvore.descricaoBotanica,
-                imagePath: arvore.imagePath,
+                imagePath: '',
               ),
             ),
           );

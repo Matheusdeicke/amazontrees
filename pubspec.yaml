@@ -30,6 +30,7 @@ environment:
 dependencies:
   sqflite: ^2.4.1
   http: ^1.2.2
+  fluttertoast: ^8.2.8
 
   flutter:
     sdk: flutter

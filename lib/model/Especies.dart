@@ -4,10 +4,11 @@ class Arvore {
   final BiologiaReprodutiva biologiaReprodutiva;
   final OcorrenciaNatural ocorrenciaNatural;
   final AspectosEcologicos aspectosEcologicos;
-  final String regeneracaoNatural;
+  final String? regeneracaoNatural;
   final Aproveitamento aproveitamento;
-  final String paisagismo;
+  final String? paisagismo;
   final Cultivo cultivo;
+  final String? imagePath;
 
   Arvore({
     required this.nomePopular,
@@ -15,16 +16,18 @@ class Arvore {
     required this.biologiaReprodutiva,
     required this.ocorrenciaNatural,
     required this.aspectosEcologicos,
-    required this.regeneracaoNatural,
+    this.regeneracaoNatural,
     required this.aproveitamento,
-    required this.paisagismo,
+    this.paisagismo,
     required this.cultivo,
+    this.imagePath,
   });
 
   factory Arvore.fromJson(Map<String, dynamic> json) {
+    print(json); // Para verificar a estrutura recebida
     return Arvore(
-      nomePopular: json['nome_popular'],
-      descricaoBotanica: json['descricao_botanica'],
+      nomePopular: json['nome_popular'] ?? 'Desconhecido',
+      descricaoBotanica: json['descricao_botanica'] ?? '',
       biologiaReprodutiva: BiologiaReprodutiva.fromJson(json['biologia_reprodutiva']),
       ocorrenciaNatural: OcorrenciaNatural.fromJson(json['ocorrencia_natural']),
       aspectosEcologicos: AspectosEcologicos.fromJson(json['aspectos_ecologicos']),
@@ -32,6 +35,7 @@ class Arvore {
       aproveitamento: Aproveitamento.fromJson(json['aproveitamento']),
       paisagismo: json['paisagismo'],
       cultivo: Cultivo.fromJson(json['cultivo']),
+      imagePath: json['imagePath'], // Opcional
     );
   }
 }
