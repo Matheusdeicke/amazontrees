@@ -24,7 +24,10 @@ class Arvore {
   });
 
   factory Arvore.fromJson(Map<String, dynamic> json) {
-    print(json); // Para verificar a estrutura recebida
+    if (!json.containsKey('nome_popular') || json['nome_popular'] == null) {
+      throw Exception("Campo 'nome_popular' é obrigatório e está ausente.");
+    }
+
     return Arvore(
       nomePopular: json['nome_popular'] ?? 'Desconhecido',
       descricaoBotanica: json['descricao_botanica'] ?? '',
@@ -35,7 +38,7 @@ class Arvore {
       aproveitamento: Aproveitamento.fromJson(json['aproveitamento']),
       paisagismo: json['paisagismo'],
       cultivo: Cultivo.fromJson(json['cultivo']),
-      imagePath: json['imagePath'], // Opcional
+      imagePath: json['imagePath'],
     );
   }
 }

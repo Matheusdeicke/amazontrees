@@ -58,9 +58,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/tree_logo.png
-    - assets/images/pau_brasil.png
-    - assets/images/andiroba.png
-    - assets/images/cajueiro.png
+    - assets/images/error_image.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

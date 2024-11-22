@@ -2,8 +2,6 @@ import 'package:amazontrees/view/tela_info_arvores.dart';
 import 'package:flutter/material.dart';
 import 'package:amazontrees/utils/colors.dart';
 import 'package:amazontrees/services/api_service.dart';
-
-
 import '../model/Especies.dart';
 
 class TelaListaEspecies extends StatefulWidget {
@@ -43,15 +41,13 @@ class _TelaListaEspeciesState extends State<TelaListaEspecies> {
             return Center(child: Text('Nenhuma espécie encontrada'));
           }
 
-          final especies = snapshot.data!;
-
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: ListView.builder(
-              itemCount: especies.length,
+              itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
-                final especie = especies[index];
-                return _buildEspecieTile(context, especie);
+                final especie = snapshot.data![index];
+                return EspecieTile(especie: especie);
               },
             ),
           );
@@ -59,30 +55,32 @@ class _TelaListaEspeciesState extends State<TelaListaEspecies> {
       ),
     );
   }
+}
 
-  Widget _buildEspecieTile(BuildContext context, Arvore arvore) {
+class EspecieTile extends StatelessWidget {
+  final Arvore especie;
+
+  EspecieTile({required this.especie});
+
+  @override
+  Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.only(bottom: 10),
       child: ListTile(
         leading: Image.asset(
-          '',
+          especie.imagePath ?? 'assets/images/error_image.png',
           width: 50,
           height: 50,
           fit: BoxFit.cover,
         ),
-        title: Text(arvore.nomePopular),
-        subtitle: Text(arvore.descricaoBotanica),
+        title: Text(especie.nomePopular),
+        subtitle: Text(especie.descricaoBotanica),
         trailing: Icon(Icons.arrow_forward),
         onTap: () {
-          // Navegar para a tela de detalhes da árvore
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => TelaInfoArvores(
-                nome: arvore.nomePopular,
-                descricao: arvore.descricaoBotanica,
-                imagePath: '',
-              ),
+              builder: (context) => TelaInfoArvores(arvore: especie),
             ),
           );
         },

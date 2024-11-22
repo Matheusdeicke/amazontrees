@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import '../utils/colors.dart';
+import '../model/Especies.dart';
 
 class TelaInfoArvores extends StatelessWidget {
-  final String nome;
-  final String descricao;
-  final String imagePath;
+  final Arvore arvore;
 
-  TelaInfoArvores({required this.nome, required this.descricao, required this.imagePath});
+  TelaInfoArvores({required this.arvore});
 
   @override
   Widget build(BuildContext context) {
@@ -26,46 +25,136 @@ class TelaInfoArvores extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: ListView(
               children: [
-                // Imagem da árvore
+                // Caixa para a imagem
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12.0),
                   ),
-                  margin: EdgeInsets.only(bottom: 16),
-                  padding: EdgeInsets.all(20.0),
-                  child: Image.asset(
-                    imagePath,
-                    fit: BoxFit.cover,
+                  margin: const EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.all(20.0),
+                  child: Center(
+                    child: SizedBox(
+                      width: 200,
+                      height: 200, // Define altura e largura iguais para formato quadrado
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: Image.asset(
+                          arvore.imagePath ?? 'assets/images/error_image.png',
+                          fit: BoxFit.cover, // Ajusta a imagem ao espaço sem distorcer
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-                // Nome da árvore
+
+                // Nome popular
                 Text(
-                  nome,
+                  arvore.nomePopular,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
+                    color: AppColors.primaryColor,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 16),
-                // Descrição
+                const SizedBox(height: 16),
+
+                // Caixa para o texto completo
                 Container(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16.0),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(8.0),
                   ),
-                  child: Text(
-                    descricao,
-                    style: TextStyle(fontSize: 14),
-                    textAlign: TextAlign.justify,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Descrição Botânica
+                      _buildSection('Descrição Botânica', arvore.descricaoBotanica),
+
+                      // Biologia Reprodutiva
+                      _buildSection(
+                        'Biologia Reprodutiva',
+                        '''
+Sistema Sexual: ${arvore.biologiaReprodutiva.sistemaSexual}
+Vetor de Polinização: ${arvore.biologiaReprodutiva.vetorPolinizacao}
+Floração: ${arvore.biologiaReprodutiva.floracao.toString()}
+Frutificação: ${arvore.biologiaReprodutiva.frutificacao.toString()}
+                        ''',
+                      ),
+
+                      // Ocorrência Natural
+                      _buildSection(
+                        'Ocorrência Natural',
+                        '''
+Latitude: ${arvore.ocorrenciaNatural.latitude.toString()}
+Altitude: ${arvore.ocorrenciaNatural.altitude.toString()}
+Mapa: ${arvore.ocorrenciaNatural.mapa}
+                        ''',
+                      ),
+
+                      // Aspectos Ecológicos
+                      _buildSection(
+                        'Aspectos Ecológicos',
+                        '''
+Grupo Sucessional: ${arvore.aspectosEcologicos.grupoSucessional}
+Pragas: ${arvore.aspectosEcologicos.pragas.toString()}
+                        ''',
+                      ),
+
+                      // Aproveitamento
+                      _buildSection(
+                        'Aproveitamento',
+                        '''
+Alimentação: ${arvore.aproveitamento.alimentacao.dadosNutricionais.toString()}
+Biotecnológico: ${arvore.aproveitamento.biotecnologico.composicao.toString()}
+Bioatividade: ${arvore.aproveitamento.bioatividade}
+                        ''',
+                      ),
+
+                      // Cultivo
+                      _buildSection(
+                        'Cultivo',
+                        '''
+Colheita e Beneficiamento: ${arvore.cultivo.colheitaBeneficiamento}
+Produção de Mudas: ${arvore.cultivo.producaoMudas.toString()}
+Transplante: ${arvore.cultivo.transplante}
+Cuidados Especiais: ${arvore.cultivo.cuidadosEspeciais.toString()}
+                        ''',
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildSection(String title, String content) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: AppColors.primaryColor,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            content,
+            style: TextStyle(fontSize: 14, color: Colors.black87),
+            textAlign: TextAlign.justify,
+          ),
+        ],
       ),
     );
   }
