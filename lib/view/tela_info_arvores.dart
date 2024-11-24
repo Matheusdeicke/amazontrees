@@ -3,7 +3,7 @@ import '../utils/colors.dart';
 import '../model/Especies.dart';
 
 class TelaInfoArvores extends StatelessWidget {
-  final Arvore arvore;
+  final Arvore arvore; // Agora recebemos o objeto completo.
 
   TelaInfoArvores({required this.arvore});
 
@@ -12,20 +12,18 @@ class TelaInfoArvores extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       appBar: AppBar(
-        title: Text('Detalhes da árvore'),
+        title: Text('Detalhes da Árvore'),
         centerTitle: true,
         backgroundColor: AppColors.secondaryColor,
       ),
       body: Center(
         child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: 600, // Limita a largura máxima para telas maiores
-          ),
+          constraints: BoxConstraints(maxWidth: 600),
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(12.0),
             child: ListView(
               children: [
-                // Caixa para a imagem
+                // Imagem da árvore
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -36,92 +34,110 @@ class TelaInfoArvores extends StatelessWidget {
                   child: Center(
                     child: SizedBox(
                       width: 200,
-                      height: 200, // Define altura e largura iguais para formato quadrado
+                      height: 200,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8.0),
-                        child: Image.asset(
-                          arvore.image_url ?? 'assets/images/error_image.png',
-                          fit: BoxFit.cover, // Ajusta a imagem ao espaço sem distorcer
+                        child: arvore.imagemUrl.isNotEmpty
+                            ? Image.network(
+                          arvore.imagemUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset(
+                              'assets/images/error_image.png',
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        )
+                            : Image.asset(
+                          'assets/images/error_image.png',
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
                   ),
                 ),
-
-                // Nome popular
-                Text(
-                  arvore.nomePopular,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primaryColor,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-
-                // Caixa para o texto completo
+                // Informações em uma única caixa branca
                 Container(
-                  padding: const EdgeInsets.all(16.0),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(8.0),
+                    borderRadius: BorderRadius.circular(12.0),
                   ),
+                  padding: const EdgeInsets.all(20.0),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start, // Alinha à esquerda (exceto Nome Popular)
                     children: [
-                      // Descrição Botânica
-                      _buildSection('Descrição Botânica', arvore.descricaoBotanica),
-
-                      // Biologia Reprodutiva
-                      _buildSection(
+                      // Nome Popular (centralizado)
+                      Center(
+                        child: Text(
+                          arvore.nomePopular,
+                          style: TextStyle(
+                            fontSize: 38,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primaryColor,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      // Informações Detalhadas
+                      _buildDetailsSection(
+                        'Descrição Botânica',
+                        arvore.descricaoBotanica,
+                      ),
+                      _buildDetailsSection(
+                        'Taxonomia',
+                        arvore.taxonomia.toString(),
+                      ),
+                      _buildDetailsSection(
                         'Biologia Reprodutiva',
                         '''
-Sistema Sexual: ${arvore.biologiaReprodutiva.sistemaSexual}
-Vetor de Polinização: ${arvore.biologiaReprodutiva.vetorPolinizacao}
-Floração: ${arvore.biologiaReprodutiva.floracao.toString()}
-Frutificação: ${arvore.biologiaReprodutiva.frutificacao.toString()}
+Sistema Sexual: ${arvore.biologiaReprodutiva['sistema_sexual'] ?? 'Não disponível'}
+Vetor de Polinização: ${arvore.biologiaReprodutiva['vetor_polinizacao'] ?? 'Não disponível'}
+Floração: ${arvore.biologiaReprodutiva['floracao'] ?? 'Não disponível'}
+Frutificação: ${arvore.biologiaReprodutiva['frutificacao'] ?? 'Não disponível'}
                         ''',
                       ),
-
-                      // Ocorrência Natural
-                      _buildSection(
+                      _buildDetailsSection(
                         'Ocorrência Natural',
                         '''
-Latitude: ${arvore.ocorrenciaNatural.latitude.toString()}
-Altitude: ${arvore.ocorrenciaNatural.altitude.toString()}
-Mapa: ${arvore.ocorrenciaNatural.mapa}
+Latitude: ${arvore.ocorrenciaNatural['latitude'] ?? 'Não disponível'}
+Altitude: ${arvore.ocorrenciaNatural['altitude'] ?? 'Não disponível'}
+Mapa: ${arvore.ocorrenciaNatural['mapa'] ?? 'Não disponível'}
                         ''',
                       ),
-
-                      // Aspectos Ecológicos
-                      _buildSection(
+                      _buildDetailsSection(
                         'Aspectos Ecológicos',
-                        '''
-Grupo Sucessional: ${arvore.aspectosEcologicos.grupoSucessional}
-Pragas: ${arvore.aspectosEcologicos.pragas.toString()}
-                        ''',
+                        arvore.aspectosEcologicos.toString(),
                       ),
-
-                      // Aproveitamento
-                      _buildSection(
+                      _buildDetailsSection(
+                        'Regeneração Natural',
+                        arvore.regeneracaoNatural,
+                      ),
+                      _buildDetailsSection(
                         'Aproveitamento',
-                        '''
-Alimentação: ${arvore.aproveitamento.alimentacao.dadosNutricionais.toString()}
-Biotecnológico: ${arvore.aproveitamento.biotecnologico.composicao.toString()}
-Bioatividade: ${arvore.aproveitamento.bioatividade}
-                        ''',
+                        arvore.aproveitamento.toString(),
                       ),
-
-                      // Cultivo
-                      _buildSection(
+                      _buildDetailsSection(
+                        'Paisagismo',
+                        arvore.paisagismo,
+                      ),
+                      _buildDetailsSection(
                         'Cultivo',
-                        '''
-Colheita e Beneficiamento: ${arvore.cultivo.colheitaBeneficiamento}
-Produção de Mudas: ${arvore.cultivo.producaoMudas.toString()}
-Transplante: ${arvore.cultivo.transplante}
-Cuidados Especiais: ${arvore.cultivo.cuidadosEspeciais.toString()}
-                        ''',
+                        arvore.cultivo.toString(),
+                      ),
+                      _buildDetailsSection(
+                        'Composição Nutricional',
+                        arvore.composicaoNutricional.toString(),
+                      ),
+                      _buildDetailsSection(
+                        'Pragas',
+                        arvore.pragas.isNotEmpty
+                            ? arvore.pragas.join(', ')
+                            : 'Não disponível',
+                      ),
+                      _buildDetailsSection(
+                        'Solos',
+                        arvore.solos.toString(),
                       ),
                     ],
                   ),
@@ -134,11 +150,22 @@ Cuidados Especiais: ${arvore.cultivo.cuidadosEspeciais.toString()}
     );
   }
 
-  Widget _buildSection(String title, String content) {
+  Widget _buildDetailsSection(String title, dynamic content) {
+    String formattedContent;
+    if (content is List && content.isNotEmpty) {
+      // Formata listas, uma entrada por linha
+      formattedContent = content.map((e) => '• $e').join('\n');
+    } else {
+      // Exibe conteúdo como texto simples
+      formattedContent = content.toString().trim().isNotEmpty
+          ? content.toString().trim()
+          : 'Não disponível';
+    }
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start, // Alinha à esquerda
         children: [
           Text(
             title,
@@ -150,7 +177,7 @@ Cuidados Especiais: ${arvore.cultivo.cuidadosEspeciais.toString()}
           ),
           const SizedBox(height: 8),
           Text(
-            content,
+            formattedContent,
             style: TextStyle(fontSize: 14, color: Colors.black87),
             textAlign: TextAlign.justify,
           ),

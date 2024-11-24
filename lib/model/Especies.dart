@@ -1,256 +1,73 @@
 class Arvore {
   final String nomePopular;
   final String descricaoBotanica;
-  final BiologiaReprodutiva biologiaReprodutiva;
-  final OcorrenciaNatural ocorrenciaNatural;
-  final AspectosEcologicos aspectosEcologicos;
-  final String? regeneracaoNatural;
-  final Aproveitamento aproveitamento;
-  final String? paisagismo;
-  final Cultivo cultivo;
-  final String? image_url;
+  final Map<String, dynamic> taxonomia;
+  final Map<String, dynamic> biologiaReprodutiva;
+  final Map<String, dynamic> ocorrenciaNatural;
+  final Map<String, dynamic> aspectosEcologicos;
+  final String regeneracaoNatural;
+  final Map<String, dynamic> aproveitamento;
+  final String paisagismo;
+  final Map<String, dynamic> cultivo;
+  final Map<String, dynamic> composicaoNutricional;
+  final List<String> pragas;
+  final Map<String, dynamic> solos;
+  final String imagemUrl;
 
   Arvore({
     required this.nomePopular,
     required this.descricaoBotanica,
+    required this.taxonomia,
     required this.biologiaReprodutiva,
     required this.ocorrenciaNatural,
     required this.aspectosEcologicos,
-    this.regeneracaoNatural,
+    required this.regeneracaoNatural,
     required this.aproveitamento,
-    this.paisagismo,
+    required this.paisagismo,
     required this.cultivo,
-    this.image_url,
+    required this.composicaoNutricional,
+    required this.pragas,
+    required this.solos,
+    required this.imagemUrl,
   });
 
+  // Método para criar uma instância a partir do JSON
   factory Arvore.fromJson(Map<String, dynamic> json) {
-    if (!json.containsKey('nome_popular') || json['nome_popular'] == null) {
-      throw Exception("Campo 'nome_popular' é obrigatório e está ausente.");
-    }
-
-    if (!json.containsKey('image_url') || json['image_url'] == null) {
-      throw Exception("Campo 'image_url' é obrigatório e está ausente.");
-    }
-
     return Arvore(
       nomePopular: json['nome_popular'] ?? 'Desconhecido',
-      descricaoBotanica: json['descricao_botanica'] ?? '',
-      biologiaReprodutiva: BiologiaReprodutiva.fromJson(json['biologia_reprodutiva']),
-      ocorrenciaNatural: OcorrenciaNatural.fromJson(json['ocorrencia_natural']),
-      aspectosEcologicos: AspectosEcologicos.fromJson(json['aspectos_ecologicos']),
-      regeneracaoNatural: json['regeneracao_natural'],
-      aproveitamento: Aproveitamento.fromJson(json['aproveitamento']),
-      paisagismo: json['paisagismo'],
-      cultivo: Cultivo.fromJson(json['cultivo']),
-      image_url: json['image_url'],
+      descricaoBotanica: json['descricao_botanica'] ?? 'Descrição não disponível',
+      taxonomia: json['taxonomia'] is Map<String, dynamic> ? json['taxonomia'] : {},
+      biologiaReprodutiva: json['biologia_reprodutiva'] is Map<String, dynamic> ? json['biologia_reprodutiva'] : {},
+      ocorrenciaNatural: json['ocorrencia_natural'] is Map<String, dynamic> ? json['ocorrencia_natural'] : {},
+      aspectosEcologicos: json['aspectos_ecologicos'] is Map<String, dynamic> ? json['aspectos_ecologicos'] : {},
+      regeneracaoNatural: json['regeneracao_natural'] ?? 'Não disponível',
+      aproveitamento: json['aproveitamento'] is Map<String, dynamic> ? json['aproveitamento'] : {},
+      paisagismo: json['paisagismo'] ?? 'Não disponível',
+      cultivo: json['cultivo'] is Map<String, dynamic> ? json['cultivo'] : {},
+      composicaoNutricional: json['composicao_nutricional'] is Map<String, dynamic> ? json['composicao_nutricional'] : {},
+      pragas: json['pragas'] is List<dynamic> ? List<String>.from(json['pragas']) : [],
+      solos: json['solos'] is Map<String, dynamic> ? json['solos'] : {},
+      imagemUrl: json['imagem_url'] ?? '',
     );
   }
-}
 
-class BiologiaReprodutiva {
-  final String sistemaSexual;
-  final String vetorPolinizacao;
-  final Map<String, String> floracao;
-  final Map<String, String> frutificacao;
-  final Dispersao dispersao;
-
-  BiologiaReprodutiva({
-    required this.sistemaSexual,
-    required this.vetorPolinizacao,
-    required this.floracao,
-    required this.frutificacao,
-    required this.dispersao,
-  });
-
-  factory BiologiaReprodutiva.fromJson(Map<String, dynamic> json) {
-    return BiologiaReprodutiva(
-      sistemaSexual: json['sistema_sexual'],
-      vetorPolinizacao: json['vetor_polinizacao'],
-      floracao: Map<String, String>.from(json['floracao']),
-      frutificacao: Map<String, String>.from(json['frutificacao']),
-      dispersao: Dispersao.fromJson(json['dispersao']),
-    );
-  }
-}
-
-class Dispersao {
-  final List<String> tipos;
-  final List<String> animais;
-
-  Dispersao({
-    required this.tipos,
-    required this.animais,
-  });
-
-  factory Dispersao.fromJson(Map<String, dynamic> json) {
-    return Dispersao(
-      tipos: List<String>.from(json['tipos']),
-      animais: List<String>.from(json['animais']),
-    );
-  }
-}
-
-class OcorrenciaNatural {
-  final Map<String, String> latitude;
-  final Map<String, String> altitude;
-  final String mapa;
-
-  OcorrenciaNatural({
-    required this.latitude,
-    required this.altitude,
-    required this.mapa,
-  });
-
-  factory OcorrenciaNatural.fromJson(Map<String, dynamic> json) {
-    return OcorrenciaNatural(
-      latitude: Map<String, String>.from(json['latitude']),
-      altitude: Map<String, String>.from(json['altitude']),
-      mapa: json['mapa'],
-    );
-  }
-}
-
-class AspectosEcologicos {
-  final String grupoSucessional;
-  final Map<String, String> pragas;
-
-  AspectosEcologicos({
-    required this.grupoSucessional,
-    required this.pragas,
-  });
-
-  factory AspectosEcologicos.fromJson(Map<String, dynamic> json) {
-    return AspectosEcologicos(
-      grupoSucessional: json['grupo_sucessional'],
-      pragas: Map<String, String>.from(json['pragas']),
-    );
-  }
-}
-
-class Aproveitamento {
-  final Alimentacao alimentacao;
-  final Biotecnologico biotecnologico;
-  final String bioatividade;
-
-  Aproveitamento({
-    required this.alimentacao,
-    required this.biotecnologico,
-    required this.bioatividade,
-  });
-
-  factory Aproveitamento.fromJson(Map<String, dynamic> json) {
-    return Aproveitamento(
-      alimentacao: Alimentacao.fromJson(json['alimentacao']),
-      biotecnologico: Biotecnologico.fromJson(json['biotecnologico']),
-      bioatividade: json['bioatividade'],
-    );
-  }
-}
-
-class Alimentacao {
-  final Map<String, String> dadosNutricionais;
-  final Map<String, String> formasConsumo;
-
-  Alimentacao({
-    required this.dadosNutricionais,
-    required this.formasConsumo,
-  });
-
-  factory Alimentacao.fromJson(Map<String, dynamic> json) {
-    return Alimentacao(
-      dadosNutricionais: Map<String, String>.from(json['dados_nutricionais']),
-      formasConsumo: Map<String, String>.from(json['formas_consumo']),
-    );
-  }
-}
-
-class Biotecnologico {
-  final Map<String, bool> composicao;
-  final String potenciaisBioprodutos;
-
-  Biotecnologico({
-    required this.composicao,
-    required this.potenciaisBioprodutos,
-  });
-
-  factory Biotecnologico.fromJson(Map<String, dynamic> json) {
-    return Biotecnologico(
-      composicao: Map<String, bool>.from(json['composicao']),
-      potenciaisBioprodutos: json['potenciais_bioprodutos'],
-    );
-  }
-}
-
-class Cultivo {
-  final String colheitaBeneficiamento;
-  final ProducaoMudas producaoMudas;
-  final String transplante;
-  final CuidadosEspeciais cuidadosEspeciais;
-
-  Cultivo({
-    required this.colheitaBeneficiamento,
-    required this.producaoMudas,
-    required this.transplante,
-    required this.cuidadosEspeciais,
-  });
-
-  factory Cultivo.fromJson(Map<String, dynamic> json) {
-    return Cultivo(
-      colheitaBeneficiamento: json['colheita_beneficiamento'],
-      producaoMudas: ProducaoMudas.fromJson(json['producao_mudas']),
-      transplante: json['transplante'],
-      cuidadosEspeciais: CuidadosEspeciais.fromJson(json['cuidados_especiais']),
-    );
-  }
-}
-
-class ProducaoMudas {
-  final String semeadura;
-  final String germinacao;
-
-  ProducaoMudas({
-    required this.semeadura,
-    required this.germinacao,
-  });
-
-  factory ProducaoMudas.fromJson(Map<String, dynamic> json) {
-    return ProducaoMudas(
-      semeadura: json['semeadura'],
-      germinacao: json['germinacao'],
-    );
-  }
-}
-
-class CuidadosEspeciais {
-  final String agua;
-  final Solos solos;
-
-  CuidadosEspeciais({
-    required this.agua,
-    required this.solos,
-  });
-
-  factory CuidadosEspeciais.fromJson(Map<String, dynamic> json) {
-    return CuidadosEspeciais(
-      agua: json['agua'],
-      solos: Solos.fromJson(json['solos']),
-    );
-  }
-}
-
-class Solos {
-  final String tipo;
-  final String ph;
-
-  Solos({
-    required this.tipo,
-    required this.ph,
-  });
-
-  factory Solos.fromJson(Map<String, dynamic> json) {
-    return Solos(
-      tipo: json['tipo'],
-      ph: json['pH'],
-    );
+  // Método para converter uma instância para JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'nome_popular': nomePopular,
+      'descricao_botanica': descricaoBotanica,
+      'taxonomia': taxonomia,
+      'biologia_reprodutiva': biologiaReprodutiva,
+      'ocorrencia_natural': ocorrenciaNatural,
+      'aspectos_ecologicos': aspectosEcologicos,
+      'regeneracao_natural': regeneracaoNatural,
+      'aproveitamento': aproveitamento,
+      'paisagismo': paisagismo,
+      'cultivo': cultivo,
+      'composicao_nutricional': composicaoNutricional,
+      'pragas': pragas,
+      'solos': solos,
+      'imagem_url': imagemUrl,
+    };
   }
 }

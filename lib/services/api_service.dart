@@ -1,44 +1,47 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:amazontrees/model/Especies.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:logger/logger.dart';
+
+import '../model/Especies.dart';
 
 class ApiService {
-  static const String apiUrl = 'http://10.0.2.2:8000/api/arvores';
+  static final Logger _logger = Logger();
 
-  static Future<List<Arvore>> fetchEspecies() async {
+  static Future<List<Arvore>> fetchEspecies(BuildContext context) async {
     try {
-      final response = await http
-          .get(Uri.parse(apiUrl))
-          .timeout(Duration(seconds: 10), onTimeout: () {
-        throw Exception("A requisição demorou muito. Verifique sua conexão.");
-      });
+      final response = await http.get(Uri.parse('http://10.0.2.2:8000/api/arvores'));
+
+      // Log do código de status da resposta
+      _logger.i('Status Code: ${response.statusCode}');
+      // Log do corpo da resposta
+      _logger.d('Body da resposta: ${response.body}');
 
       if (response.statusCode == 200) {
-        final jsonResponse = json.decode(response.body);
+        // Decodifica o JSON principal
+        final Map<String, dynamic> jsonData = json.decode(response.body);
 
-        if (jsonResponse['data'] is List) {
-          return (jsonResponse['data'] as List)
-              .map((json) => Arvore.fromJson(json))
-              .toList();
+        // Verifica se há uma chave "data" contendo a lista
+        if (jsonData.containsKey('data')) {
+          final List<dynamic> dataList = jsonData['data'];
+
+          // Certifique-se de que dataList não é null ou vazia
+          if (dataList.isEmpty) {
+            _logger.w('Nenhuma espécie encontrada na API.');
+            return [];
+          }
+
+          // Converte cada item da lista para o modelo Arvore
+          return dataList.map((item) => Arvore.fromJson(item)).toList();
         } else {
-          throw Exception("Resposta inesperada da API.");
+          throw Exception('Chave "data" ausente na resposta da API.');
         }
       } else {
-        throw Exception(
-            "Erro ao buscar espécies: ${response.statusCode} - ${response.reasonPhrase}");
+        throw Exception('Erro ao carregar dados: ${response.statusCode}');
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: e.toString(),
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-      return [];
+      _logger.e('Erro em fetchEspecies: $e');
+      throw Exception('Erro ao carregar espécies: $e');
     }
   }
 }

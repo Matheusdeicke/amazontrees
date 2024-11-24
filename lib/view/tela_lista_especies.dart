@@ -1,8 +1,10 @@
-import 'package:amazontrees/view/tela_info_arvores.dart';
 import 'package:flutter/material.dart';
-import 'package:amazontrees/utils/colors.dart';
-import 'package:amazontrees/services/api_service.dart';
+import 'package:flutter/scheduler.dart';
+import '../utils/colors.dart';
+import '../utils/toast.dart';
+import '../services/api_service.dart';
 import '../model/Especies.dart';
+import 'tela_info_arvores.dart';
 
 class TelaListaEspecies extends StatefulWidget {
   @override
@@ -15,7 +17,8 @@ class _TelaListaEspeciesState extends State<TelaListaEspecies> {
   @override
   void initState() {
     super.initState();
-    especiesFuture = ApiService.fetchEspecies();
+    // Inicializa o Future ao carregar a tela
+    especiesFuture = ApiService.fetchEspecies(context);
   }
 
   @override
@@ -34,19 +37,35 @@ class _TelaListaEspeciesState extends State<TelaListaEspecies> {
           }
 
           if (snapshot.hasError) {
-            return Center(child: Text('Erro ao carregar dados'));
+            SchedulerBinding.instance.addPostFrameCallback((_) {
+              ToastUtils.showToast(
+                context: context,
+                message: 'Erro ao carregar espécies: ${snapshot.error}',
+                backgroundColor: Colors.red,
+              );
+            });
+            return Center(child: Text('Erro ao carregar dados.'));
           }
 
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('Nenhuma espécie encontrada'));
+            SchedulerBinding.instance.addPostFrameCallback((_) {
+              ToastUtils.showToast(
+                context: context,
+                message: 'Nenhuma espécie encontrada.',
+                backgroundColor: Colors.orange,
+              );
+            });
+            return Center(child: Text('Nenhuma espécie encontrada.'));
           }
 
+          // Lista de espécies carregada
+          final especies = snapshot.data!;
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: ListView.builder(
-              itemCount: snapshot.data!.length,
+              itemCount: especies.length,
               itemBuilder: (context, index) {
-                final especie = snapshot.data![index];
+                final especie = especies[index];
                 return EspecieTile(especie: especie);
               },
             ),
@@ -65,18 +84,51 @@ class EspecieTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.only(bottom: 10),
+      margin: const EdgeInsets.only(bottom: 10),
       child: ListTile(
-        leading: Image.asset(
-          especie.image_url ?? 'assets/images/error_image.png',
-          width: 50,
-          height: 50,
-          fit: BoxFit.cover,
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(8.0),
+          child: especie.imagemUrl.isNotEmpty
+              ? Image.network(
+            especie.imagemUrl,
+            width: 50,
+            height: 50,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Image.asset(
+                'assets/images/error_image.png',
+                width: 50,
+                height: 50,
+                fit: BoxFit.cover,
+              );
+            },
+          )
+              : Image.asset(
+            'assets/images/error_image.png',
+            width: 50,
+            height: 50,
+            fit: BoxFit.cover,
+          ),
         ),
-        title: Text(especie.nomePopular),
-        subtitle: Text(especie.descricaoBotanica),
-        trailing: Icon(Icons.arrow_forward),
+        title: Text(
+          especie.nomePopular,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(
+          especie.descricaoBotanica,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: Icon(Icons.arrow_forward, color: AppColors.secondaryColor),
         onTap: () {
+          if (especie.nomePopular.isEmpty) {
+            ToastUtils.showToast(
+              context: context,
+              message: 'Nome popular da espécie está vazio!',
+              backgroundColor: Colors.orange,
+            );
+            return;
+          }
           Navigator.push(
             context,
             MaterialPageRoute(
