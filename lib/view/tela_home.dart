@@ -25,7 +25,7 @@ class _TelaHomeState extends State<TelaHome> {
         msg: "Sincronizando espécies...",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.black87,
+        backgroundColor: Colors.green,
         textColor: Colors.white,
       );
 
@@ -84,24 +84,30 @@ class _TelaHomeState extends State<TelaHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: AppBar(
-        title: Text('Tela Home'),
-        backgroundColor: AppColors.secondaryColor,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: Center(
         child: Column(
+          mainAxisSize: MainAxisSize.min, // Centraliza verticalmente o conteúdo
+          mainAxisAlignment: MainAxisAlignment.center, // Centraliza no eixo principal
           children: [
+            Container(
+              width: 200,
+              height: 200,
+              child: Image.asset(
+                'assets/images/tree_logo.png',
+                fit: BoxFit.cover,
+              ),
+            ),
+            SizedBox(height: 16), // Espaçamento entre logo e botão
             // Botão de Sincronização
             ElevatedButton.icon(
               onPressed: isSyncing ? null : sincronizarDados,
               icon: Icon(isSyncing ? Icons.sync : Icons.cloud_download),
               label: Text(isSyncing ? "Sincronizando..." : "Sincronizar Espécies"),
               style: ElevatedButton.styleFrom(
-                backgroundColor: isSyncing ? AppColors.secondaryColor : AppColors.selectedNavigationBar,
+                backgroundColor: isSyncing ? AppColors.secondaryColor : Colors.green,
+                foregroundColor: Colors.white,
               ),
             ),
-            SizedBox(height: 16),
           ],
         ),
       ),

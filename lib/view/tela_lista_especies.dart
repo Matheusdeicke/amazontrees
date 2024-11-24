@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import '../utils/colors.dart';
 import '../utils/toast.dart';
-import '../services/api_service.dart';
+import '../database/database_helper.dart';
 import '../model/Especies.dart';
 import 'tela_info_arvores.dart';
 
@@ -12,65 +11,100 @@ class TelaListaEspecies extends StatefulWidget {
 }
 
 class _TelaListaEspeciesState extends State<TelaListaEspecies> {
-  late Future<List<Arvore>> especiesFuture;
+  final dbHelper = DatabaseHelper.instance; // Instância do DatabaseHelper
+  List<Arvore> especies = [];
+  List<Arvore> filteredEspecies = [];
+  String searchQuery = '';
 
   @override
   void initState() {
     super.initState();
-    // Inicializa o Future ao carregar a tela
-    especiesFuture = ApiService.fetchEspecies(context);
+    _carregarEspecies();
+  }
+
+  Future<void> _carregarEspecies() async {
+    try {
+      // Busca todas as árvores do banco
+      final especiesSalvas = await dbHelper.fetchArvores();
+      setState(() {
+        especies = especiesSalvas;
+        filteredEspecies = especiesSalvas; // Inicializa com todas as espécies
+      });
+    } catch (e) {
+      ToastUtils.showToast(
+        context: context,
+        message: 'Erro ao carregar espécies: $e',
+        backgroundColor: Colors.red,
+      );
+    }
+  }
+
+  void _filterEspecies(String query) {
+    setState(() {
+      searchQuery = query;
+      if (query.isEmpty) {
+        filteredEspecies = especies;
+      } else {
+        filteredEspecies = especies
+            .where((especie) =>
+            especie.nomePopular.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: AppBar(
-        title: Text('Lista de Espécies'),
-        backgroundColor: AppColors.secondaryColor,
-      ),
-      body: FutureBuilder<List<Arvore>>(
-        future: especiesFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-
-          if (snapshot.hasError) {
-            SchedulerBinding.instance.addPostFrameCallback((_) {
-              ToastUtils.showToast(
-                context: context,
-                message: 'Erro ao carregar espécies: ${snapshot.error}',
-                backgroundColor: Colors.red,
-              );
-            });
-            return Center(child: Text('Erro ao carregar dados.'));
-          }
-
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            SchedulerBinding.instance.addPostFrameCallback((_) {
-              ToastUtils.showToast(
-                context: context,
-                message: 'Nenhuma espécie encontrada.',
-                backgroundColor: Colors.orange,
-              );
-            });
-            return Center(child: Text('Nenhuma espécie encontrada.'));
-          }
-
-          // Lista de espécies carregada
-          final especies = snapshot.data!;
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ListView.builder(
-              itemCount: especies.length,
+      body: Column(
+        children: [
+          SizedBox(height: 40),
+          // Campo de Pesquisa
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: TextField(
+              onChanged: _filterEspecies,
+              decoration: InputDecoration(
+                hintText: 'Pesquisar por nome popular...',
+                prefixIcon: Icon(Icons.search),
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(
+                    color: AppColors.secondaryColor,
+                    width: 2.0,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(
+                    color: Colors.green,
+                    width: 2.0,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // Lista de Espécies
+          Expanded(
+            child: filteredEspecies.isEmpty
+                ? Center(
+              child: Text(
+                'Nenhuma espécie encontrada.',
+                style: TextStyle(fontSize: 16, color: Colors.black54),
+              ),
+            )
+                : ListView.builder(
+              itemCount: filteredEspecies.length,
               itemBuilder: (context, index) {
-                final especie = especies[index];
+                final especie = filteredEspecies[index];
                 return EspecieTile(especie: especie);
               },
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }
@@ -121,14 +155,6 @@ class EspecieTile extends StatelessWidget {
         ),
         trailing: Icon(Icons.arrow_forward, color: AppColors.secondaryColor),
         onTap: () {
-          if (especie.nomePopular.isEmpty) {
-            ToastUtils.showToast(
-              context: context,
-              message: 'Nome popular da espécie está vazio!',
-              backgroundColor: Colors.orange,
-            );
-            return;
-          }
           Navigator.push(
             context,
             MaterialPageRoute(

@@ -11,11 +11,6 @@ class TelaInfoArvores extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: AppBar(
-        title: Text('Detalhes da Árvore'),
-        centerTitle: true,
-        backgroundColor: AppColors.secondaryColor,
-      ),
       body: Center(
         child: ConstrainedBox(
           constraints: BoxConstraints(maxWidth: 600),

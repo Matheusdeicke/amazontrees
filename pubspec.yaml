@@ -61,6 +61,10 @@ flutter:
   assets:
     - assets/images/tree_logo.png
     - assets/images/error_image.png
+    - assets/images/caio_kirst.png
+    - assets/images/gustavo_motta.png
+    - assets/images/matheus_deicke.png
+    - assets/images/victor_eduardo.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

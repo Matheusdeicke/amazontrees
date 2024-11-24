@@ -1,7 +1,8 @@
+import 'package:amazontrees/view/tela_sobre.dart';
 import 'package:flutter/material.dart';
 import 'package:amazontrees/utils/colors.dart';
-import 'tela_home.dart'; // Importe a TelaHome
-import 'tela_lista_especies.dart'; // Importe a TelaListaEspecies
+import 'tela_home.dart';
+import 'tela_lista_especies.dart';
 
 class TelaInicial extends StatefulWidget {
   @override
@@ -15,6 +16,7 @@ class _TelaInicialState extends State<TelaInicial> {
   final List<Widget> _telas = [
     TelaHome(),
     TelaListaEspecies(),
+    TelaSobre(),
     // Adicione outras telas conforme necessário
     Center(child: Text("Sincronizar", style: TextStyle(fontSize: 24))),
     Center(child: Text("Sobre", style: TextStyle(fontSize: 24))),
@@ -60,22 +62,12 @@ class _TelaInicialState extends State<TelaInicial> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.sync),
-              title: Text('Sincronizar'),
-              onTap: () {
-                Navigator.pop(context);
-                setState(() {
-                  _selectedIndex = 2;
-                });
-              },
-            ),
-            ListTile(
               leading: Icon(Icons.info),
               title: Text('Sobre'),
               onTap: () {
                 Navigator.pop(context);
                 setState(() {
-                  _selectedIndex = 3;
+                  _selectedIndex = 2;
                 });
               },
             ),
@@ -90,8 +82,8 @@ class _TelaInicialState extends State<TelaInicial> {
           });
         },
         selectedIndex: _selectedIndex,
-        indicatorColor: AppColors.primaryColor, // Cor do indicador selecionado
-        backgroundColor: AppColors.secondaryColor, // Cor de fundo da NavigationBar
+        indicatorColor: Colors.green, // Cor do indicador selecionado
+        backgroundColor: Colors.white, // Cor de fundo da NavigationBar
         destinations: const <NavigationDestination>[
           NavigationDestination(
             selectedIcon: Icon(Icons.home),
@@ -102,11 +94,6 @@ class _TelaInicialState extends State<TelaInicial> {
             selectedIcon: Icon(Icons.list),
             icon: Icon(Icons.list_outlined),
             label: 'Lista de Espécies',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.sync),
-            icon: Icon(Icons.sync_outlined),
-            label: 'Sincronizar',
           ),
           NavigationDestination(
             selectedIcon: Icon(Icons.info),
