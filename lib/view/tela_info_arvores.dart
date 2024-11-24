@@ -40,7 +40,7 @@ class TelaInfoArvores extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8.0),
                         child: Image.asset(
-                          arvore.imagePath ?? 'assets/images/error_image.png',
+                          arvore.image_url ?? 'assets/images/error_image.png',
                           fit: BoxFit.cover, // Ajusta a imagem ao espaço sem distorcer
                         ),
                       ),

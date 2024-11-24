@@ -68,7 +68,7 @@ class EspecieTile extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 10),
       child: ListTile(
         leading: Image.asset(
-          especie.imagePath ?? 'assets/images/error_image.png',
+          especie.image_url ?? 'assets/images/error_image.png',
           width: 50,
           height: 50,
           fit: BoxFit.cover,

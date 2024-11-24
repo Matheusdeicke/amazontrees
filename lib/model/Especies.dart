@@ -8,7 +8,7 @@ class Arvore {
   final Aproveitamento aproveitamento;
   final String? paisagismo;
   final Cultivo cultivo;
-  final String? imagePath;
+  final String? image_url;
 
   Arvore({
     required this.nomePopular,
@@ -20,12 +20,16 @@ class Arvore {
     required this.aproveitamento,
     this.paisagismo,
     required this.cultivo,
-    this.imagePath,
+    this.image_url,
   });
 
   factory Arvore.fromJson(Map<String, dynamic> json) {
     if (!json.containsKey('nome_popular') || json['nome_popular'] == null) {
       throw Exception("Campo 'nome_popular' é obrigatório e está ausente.");
+    }
+
+    if (!json.containsKey('image_url') || json['image_url'] == null) {
+      throw Exception("Campo 'image_url' é obrigatório e está ausente.");
     }
 
     return Arvore(
@@ -38,7 +42,7 @@ class Arvore {
       aproveitamento: Aproveitamento.fromJson(json['aproveitamento']),
       paisagismo: json['paisagismo'],
       cultivo: Cultivo.fromJson(json['cultivo']),
-      imagePath: json['imagePath'],
+      image_url: json['image_url'],
     );
   }
 }
