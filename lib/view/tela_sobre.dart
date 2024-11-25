@@ -4,23 +4,23 @@ import '../utils/colors.dart';
 class TelaSobre extends StatelessWidget {
   final List<Map<String, String>> integrantes = [
     {
-      'nome': 'Matheus Silva',
-      'descricao': 'Desenvolvedor Full Stack apaixonado por tecnologia e design de interfaces.',
+      'nome': 'Caio Kirst',
+      'descricao': '2024 S1 e S2 pegou diamante no LOL.',
       'imagem': 'assets/images/caio_kirst.png'
     },
     {
-      'nome': 'Joana Santos',
-      'descricao': 'Engenheira de Software focada em soluções escaláveis e inovadoras.',
+      'nome': 'Gustavo Motta',
+      'descricao': 'Predador de pererecas atualmente casado.',
       'imagem': 'assets/images/gustavo_motta.png'
     },
     {
-      'nome': 'Carlos Oliveira',
-      'descricao': 'Especialista em bancos de dados e segurança da informação.',
+      'nome': 'Matheus Deicke',
+      'descricao': 'Rato de academia e encoleirado.',
       'imagem': 'assets/images/matheus_deicke.png'
     },
     {
-      'nome': 'Ana Souza',
-      'descricao': 'UI/UX Designer com experiência em design centrado no usuário.',
+      'nome': 'Victor Eduardo',
+      'descricao': 'O famoso debulha código.',
       'imagem': 'assets/images/victor_eduardo.png'
     },
   ];

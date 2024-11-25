@@ -146,7 +146,10 @@ class EspecieTile extends StatelessWidget {
         ),
         title: Text(
           especie.nomePopular,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: AppColors.primaryColor, // Define a cor do texto
+          ),
         ),
         subtitle: Text(
           especie.descricaoBotanica,

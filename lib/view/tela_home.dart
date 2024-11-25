@@ -89,15 +89,22 @@ class _TelaHomeState extends State<TelaHome> {
           mainAxisSize: MainAxisSize.min, // Centraliza verticalmente o conteúdo
           mainAxisAlignment: MainAxisAlignment.center, // Centraliza no eixo principal
           children: [
+            // Box Circular com Imagem
             Container(
               width: 200,
               height: 200,
-              child: Image.asset(
-                'assets/images/tree_logo.png',
-                fit: BoxFit.cover,
+              decoration: BoxDecoration(
+                color: Colors.green, // Cor de fundo da box
+                shape: BoxShape.circle, // Formato circular
+              ),
+              child: ClipOval(
+                child: Image.asset(
+                  'assets/images/tree_logo.png',
+                  fit: BoxFit.cover, // Faz a imagem ocupar toda a box circular
+                ),
               ),
             ),
-            SizedBox(height: 16), // Espaçamento entre logo e botão
+            SizedBox(height: 16), // Espaçamento entre a imagem e o botão
             // Botão de Sincronização
             ElevatedButton.icon(
               onPressed: isSyncing ? null : sincronizarDados,
