@@ -18,6 +18,16 @@ class TelaInfoArvores extends StatelessWidget {
             padding: const EdgeInsets.all(12.0),
             child: ListView(
               children: [
+                // Botão de voltar
+                Align(
+                  alignment: Alignment.centerLeft, // Alinha à esquerda
+                  child: IconButton(
+                    icon: Icon(Icons.arrow_back, color: AppColors.primaryColor),
+                    onPressed: () => Navigator.pop(context), // Ação de voltar
+                  ),
+                ),
+                const SizedBox(height: 8), // Espaço entre o botão e a imagem
+
                 // Imagem da árvore
                 Container(
                   decoration: BoxDecoration(

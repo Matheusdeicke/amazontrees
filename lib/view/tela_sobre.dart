@@ -5,22 +5,22 @@ class TelaSobre extends StatelessWidget {
   final List<Map<String, String>> integrantes = [
     {
       'nome': 'Caio Kirst',
-      'descricao': '2024 S1 e S2 pegou diamante no LOL.',
+      'descricao': '21 anos e atualmente estuda Ciências da Computação na UNISC.\nGithub: caiokirst.',
       'imagem': 'assets/images/caio_kirst.png'
     },
     {
       'nome': 'Gustavo Motta',
-      'descricao': 'Predador de pererecas atualmente casado.',
+      'descricao': '21 anos e atualmente estuda Ciências da Computação na UNISC.\nGithub: gusstavomotta.',
       'imagem': 'assets/images/gustavo_motta.png'
     },
     {
       'nome': 'Matheus Deicke',
-      'descricao': 'Rato de academia e encoleirado.',
+      'descricao': '21 anos e atualmente estuda Ciências da Computação na UNISC.\nGithub: matheusdeicke.',
       'imagem': 'assets/images/matheus_deicke.png'
     },
     {
       'nome': 'Victor Eduardo',
-      'descricao': 'O famoso debulha código.',
+      'descricao': '25 anos e atualmente estuda Ciências da Computação na UNISC.\nGithub: nascimas.',
       'imagem': 'assets/images/victor_eduardo.png'
     },
   ];
