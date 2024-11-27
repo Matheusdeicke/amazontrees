@@ -1,89 +1,123 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'tela_lista_especies.dart';  // Importando a tela correta
+import 'package:fluttertoast/fluttertoast.dart';
+import '../services/api_service.dart';
+import '../model/Especies.dart';
+import '../database/database_helper.dart';
 import '../utils/colors.dart';
 
-class TelaHome extends StatelessWidget {
-  // Função de sincronizar
-  void sincronizarDados() {
-    // Aqui você pode implementar a lógica de sincronização com o servidor
-    print("Sincronizando dados...");
+class TelaHome extends StatefulWidget {
+  @override
+  _TelaHomeState createState() => _TelaHomeState();
+}
+
+class _TelaHomeState extends State<TelaHome> {
+  final dbHelper = DatabaseHelper.instance;
+  bool isSyncing = false; // Para controlar o estado de sincronização
+
+  // Sincroniza os dados da API e os salva no banco de dados
+  Future<void> sincronizarDados() async {
+    setState(() {
+      isSyncing = true; // Iniciando sincronização
+    });
+
+    try {
+      Fluttertoast.showToast(
+        msg: "Sincronizando espécies...",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+      );
+
+      // Busca os dados da API
+      final especiesApi = await ApiService.fetchEspecies(context);
+
+      // Limpa o banco e insere os novos dados
+      await dbHelper.clearArvore();
+      for (var especie in especiesApi) {
+        await dbHelper.insertArvore(especie);
+      }
+
+      // Atualiza a lista local com os dados sincronizados
+      final count = await carregarEspecies();
+
+      Fluttertoast.showToast(
+        msg: "Sincronização concluída com sucesso! Total de árvores: $count",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+      );
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Erro ao sincronizar espécies: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
+    } finally {
+      setState(() {
+        isSyncing = false; // Finalizando sincronização
+      });
+    }
+  }
+
+  // Carrega os dados salvos no banco de dados e retorna a quantidade
+  Future<int> carregarEspecies() async {
+    try {
+      final especiesSalvas = await dbHelper.fetchArvores(); // Agora retorna uma lista
+      return especiesSalvas.length; // Retorna a contagem
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Erro ao carregar espécies: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
+      return 0;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('AMAZONTREE'),
-        backgroundColor: AppColors.secondaryColor,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      backgroundColor: AppColors.backgroundColor,
+      body: Center(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min, // Centraliza verticalmente o conteúdo
+          mainAxisAlignment: MainAxisAlignment.center, // Centraliza no eixo principal
           children: [
-            // Barra de pesquisa
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'Digite uma espécie',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
+            // Box Circular com Imagem
+            Container(
+              width: 200,
+              height: 200,
+              decoration: BoxDecoration(
+                color: Colors.green, // Cor de fundo da box
+                shape: BoxShape.circle, // Formato circular
+              ),
+              child: ClipOval(
+                child: Image.asset(
+                  'assets/images/tree_logo.png',
+                  fit: BoxFit.cover, // Faz a imagem ocupar toda a box circular
                 ),
               ),
             ),
-            SizedBox(height: 20),
-
-            // Botões
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: _buildActionButton(
-                    context,
-                    icon: Icons.cloud_done,
-                    label: 'Lista de Espécies',
-                    onPressed: () {
-                      // Abre a tela da lista de espécies
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => TelaListaEspecies()),
-                      );
-                    },
-                  ),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: _buildActionButton(
-                    context,
-                    icon: Icons.sync,
-                    label: 'Sincronizar',
-                    onPressed: () {
-                      sincronizarDados();  // Chama a função de sincronização
-                    },
-                  ),
-                ),
-              ],
+            SizedBox(height: 16), // Espaçamento entre a imagem e o botão
+            // Botão de Sincronização
+            ElevatedButton.icon(
+              onPressed: isSyncing ? null : sincronizarDados,
+              icon: Icon(isSyncing ? Icons.sync : Icons.cloud_download),
+              label: Text(isSyncing ? "Sincronizando..." : "Sincronizar Espécies"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: isSyncing ? AppColors.secondaryColor : Colors.green,
+                foregroundColor: Colors.white,
+              ),
             ),
           ],
         ),
       ),
     );
   }
-}
-
-Widget _buildActionButton(BuildContext context,
-    {required IconData icon, required String label, required VoidCallback onPressed}) {
-  return ElevatedButton.icon(
-    onPressed: onPressed,
-    icon: Icon(icon),
-    label: Text(label),
-    style: ElevatedButton.styleFrom(
-      backgroundColor: AppColors.primaryColor,
-      foregroundColor: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-    ),
-  );
 }
