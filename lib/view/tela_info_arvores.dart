@@ -3,7 +3,7 @@ import '../utils/colors.dart';
 import '../model/Especies.dart';
 
 class TelaInfoArvores extends StatelessWidget {
-  final Arvore arvore; // Agora recebemos o objeto completo.
+  final Arvore arvore;
 
   TelaInfoArvores({required this.arvore});
 
@@ -61,7 +61,7 @@ class TelaInfoArvores extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Informações em uma única caixa branca
+
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -69,9 +69,8 @@ class TelaInfoArvores extends StatelessWidget {
                   ),
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start, // Alinha à esquerda (exceto Nome Popular)
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Nome Popular (centralizado)
                       Center(
                         child: Text(
                           arvore.nomePopular,
@@ -84,35 +83,35 @@ class TelaInfoArvores extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      // Informações Detalhadas
                       _buildDetailsSection(
                         'Descrição Botânica',
                         arvore.descricaoBotanica,
                       ),
                       _buildDetailsSection(
                         'Taxonomia',
-                        arvore.taxonomia.toString(),
+                        arvore.taxonomia,
                       ),
                       _buildDetailsSection(
                         'Biologia Reprodutiva',
-                        '''
-Sistema Sexual: ${arvore.biologiaReprodutiva['sistema_sexual'] ?? 'Não disponível'}
-Vetor de Polinização: ${arvore.biologiaReprodutiva['vetor_polinizacao'] ?? 'Não disponível'}
-Floração: ${arvore.biologiaReprodutiva['floracao'] ?? 'Não disponível'}
-Frutificação: ${arvore.biologiaReprodutiva['frutificacao'] ?? 'Não disponível'}
-                        ''',
+                        {
+                          'Sistema Sexual': arvore.biologiaReprodutiva['sistema_sexual'] ?? 'Não disponível',
+                          'Vetor de Polinização': arvore.biologiaReprodutiva['vetor_polinizacao'] ?? 'Não disponível',
+                          'Floração': arvore.biologiaReprodutiva['floracao'] ?? 'Não disponível',
+                          'Frutificação': arvore.biologiaReprodutiva['frutificacao'] ?? 'Não disponível',
+                          'Dispersão': arvore.biologiaReprodutiva['dispersao'] ?? 'Não disponível',
+                        },
                       ),
                       _buildDetailsSection(
                         'Ocorrência Natural',
-                        '''
-Latitude: ${arvore.ocorrenciaNatural['latitude'] ?? 'Não disponível'}
-Altitude: ${arvore.ocorrenciaNatural['altitude'] ?? 'Não disponível'}
-Mapa: ${arvore.ocorrenciaNatural['mapa'] ?? 'Não disponível'}
-                        ''',
+                        {
+                          'Latitude': arvore.ocorrenciaNatural['latitude'] ?? 'Não disponível',
+                          'Altitude': arvore.ocorrenciaNatural['altitude'] ?? 'Não disponível',
+                          'Mapa': arvore.ocorrenciaNatural['mapa'] ?? 'Não disponível',
+                        },
                       ),
                       _buildDetailsSection(
                         'Aspectos Ecológicos',
-                        arvore.aspectosEcologicos.toString(),
+                        arvore.aspectosEcologicos,
                       ),
                       _buildDetailsSection(
                         'Regeneração Natural',
@@ -120,7 +119,7 @@ Mapa: ${arvore.ocorrenciaNatural['mapa'] ?? 'Não disponível'}
                       ),
                       _buildDetailsSection(
                         'Aproveitamento',
-                        arvore.aproveitamento.toString(),
+                        arvore.aproveitamento,
                       ),
                       _buildDetailsSection(
                         'Paisagismo',
@@ -128,21 +127,21 @@ Mapa: ${arvore.ocorrenciaNatural['mapa'] ?? 'Não disponível'}
                       ),
                       _buildDetailsSection(
                         'Cultivo',
-                        arvore.cultivo.toString(),
+                        arvore.cultivo,
                       ),
                       _buildDetailsSection(
                         'Composição Nutricional',
-                        arvore.composicaoNutricional.toString(),
+                        arvore.composicaoNutricional,
                       ),
                       _buildDetailsSection(
                         'Pragas',
                         arvore.pragas.isNotEmpty
-                            ? arvore.pragas.join(', ')
+                            ? arvore.pragas
                             : 'Não disponível',
                       ),
                       _buildDetailsSection(
                         'Solos',
-                        arvore.solos.toString(),
+                        arvore.solos,
                       ),
                     ],
                   ),
@@ -156,16 +155,7 @@ Mapa: ${arvore.ocorrenciaNatural['mapa'] ?? 'Não disponível'}
   }
 
   Widget _buildDetailsSection(String title, dynamic content) {
-    String formattedContent;
-    if (content is List && content.isNotEmpty) {
-      // Formata listas, uma entrada por linha
-      formattedContent = content.map((e) => '• $e').join('\n');
-    } else {
-      // Exibe conteúdo como texto simples
-      formattedContent = content.toString().trim().isNotEmpty
-          ? content.toString().trim()
-          : 'Não disponível';
-    }
+    String formattedContent = _formatContent(content);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
@@ -189,5 +179,28 @@ Mapa: ${arvore.ocorrenciaNatural['mapa'] ?? 'Não disponível'}
         ],
       ),
     );
+  }
+
+  String _formatContent(dynamic content) {
+    if (content is Map && content.isNotEmpty) {
+      return content.entries
+          .map((entry) =>
+      '${_capitalizeAndRemoveUnderscore(entry.key)}:\n${_formatContent(entry.value)}\n') // Aplica a formatação nas chaves
+          .join('\n');
+    } else if (content is List && content.isNotEmpty) {
+      return content.map((e) => '• ${_formatContent(e)}').join('\n'); // Formata listas
+    } else if (content is String) {
+      return content.trim().isNotEmpty ? content.trim() : 'Não disponível'; // Formata strings
+    } else {
+      return 'Não disponível';
+    }
+  }
+
+  String _capitalizeAndRemoveUnderscore(String text) {
+    return text
+        .replaceAll('_', ' ') // Remove underscores
+        .split(' ')
+        .map((word) => word[0].toUpperCase() + word.substring(1)) // Capitaliza cada palavra
+        .join(' '); // Recompõe a string com espaços
   }
 }
