@@ -1,6 +1,6 @@
 # amazontrees
 
-aplicação movel, desenvolvida em flutter, para mostrar informações sobre as árvores da amazonia
+Aplicação móvel, desenvolvida em flutter, para mostrar informações sobre as árvores da Amazônia.
 
 ## Getting Started
 
